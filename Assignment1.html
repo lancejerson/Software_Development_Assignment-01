@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="Assignment1.css">
+</head>
+<body>
+    <div class="container">
+        <div class="controls">
+            <div class="control-group">
+                <input type="number" id="userCount" min="0" max="1000" value="10" placeholder="Input Number of Users (1-1000)">
+            </div>
+
+        </div>
+        
+        <div id="errorMessage" class="error"></div>
+        
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Loading users...</p>
+        </div>
+        
+        <div class="users-table-container">
+            <table id="usersTable">
+                <thead>
+                    <tr>
+                        <th>
+                            <div class="control-group">
+                                <select id="nameType" class="name-type" >
+                                    <option value="first">First Name</option>
+                                    <option value="last">Last Name</option>
+                                </select>
+                            </div>
+                        </th>
+                        <th>Gender</th>
+                        <th>Email Address</th>
+                        <th>Country</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                    <!-- Users will be displayed here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="Assignment1.js"></script>
+</body>
+</html>
