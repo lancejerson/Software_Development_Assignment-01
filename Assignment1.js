@@ -1,19 +1,34 @@
 document.addEventListener('DOMContentLoaded', function() {
     const userCountInput = document.getElementById('userCount');
-    const nameTypeSelect = document.getElementById('nameType');
-    const usersTableBody = document.getElementById('usersTableBody');
+    const nameTypeSelector = document.getElementById('nameTypeSelector');
+    const usersList = document.getElementById('usersList');
     const errorMessage = document.getElementById('errorMessage');
     const loading = document.getElementById('loading');
     
-    // Validate input range
-    userCountInput.addEventListener('change', function() {
-        if (this.value < 0) this.value = 0;
-        if (this.value > 1000) this.value = 1000;
-        generateUsers();
+    let currentUsers = []; 
+    let nameType = 'first'; 
+    let timeoutId = null; 
+    
+    
+    nameTypeSelector.addEventListener('change', function() {
+        nameType = this.value;
+        displayUsers(currentUsers); 
     });
     
-    // Generate users when name type is changed
-    nameTypeSelect.addEventListener('change', generateUsers);
+    
+    userCountInput.addEventListener('input', function() {
+        
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+        }
+        
+        
+        timeoutId = setTimeout(() => {
+            if (this.value < 0) this.value = 0;
+            if (this.value > 1000) this.value = 1000;
+            generateUsers();
+        }, 1500);
+    });
     
     function generateUsers() {
         const userCount = parseInt(userCountInput.value);
@@ -24,28 +39,33 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         if (userCount === 0) {
-            usersTableBody.innerHTML = '';
+            usersList.innerHTML = '';
+            currentUsers = [];
             hideError();
             return;
         }
         
-        hideError();
-        showLoading();
         
-        fetchUsers(userCount)
-            .then(users => {
-                displayUsers(users);
-                hideLoading();
-            })
-            .catch(error => {
-                hideLoading();
-                showError(error.message);
-            });
+        if (userCount !== currentUsers.length) {
+            hideError();
+            showLoading();
+            
+            fetchUsers(userCount)
+                .then(users => {
+                    currentUsers = users; 
+                    displayUsers(currentUsers);
+                    hideLoading();
+                })
+                .catch(error => {
+                    hideLoading();
+                    showError(error.message);
+                });
+        }
     }
     
     function fetchUsers(count) {
         return new Promise((resolve, reject) => {
-            // Set a timeout for the API request
+        
             const timeout = setTimeout(() => {
                 reject(new Error('Request timeout. Please check your internet connection.'));
             }, 10000);
@@ -70,53 +90,42 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function displayUsers(users) {
-        const nameType = nameTypeSelect.value;
-        usersTableBody.innerHTML = '';
+        usersList.innerHTML = '';
         
         users.forEach(user => {
             const name = nameType === 'first' 
                 ? `${user.name.first}` 
                 : `${user.name.last}`;
             
-            const row = document.createElement('tr');
+            const userEl = document.createElement('div');
+            userEl.className = 'user-row';
             
-            row.innerHTML = `
-                <td>${name}</td>
-                <td>${user.gender.charAt(0).toUpperCase() + user.gender.slice(1)}</td>
-                <td>${user.email}</td>
-                <td>${user.location.country}</td>
+            userEl.innerHTML = `
+                <div>${name}</div>
+                <div>${user.gender.charAt(0).toUpperCase() + user.gender.slice(1)}</div>
+                <div>${user.email}</div>
+                <div>${user.location.country}</div>
             `;
-            usersTableBody.appendChild(row);
+            usersList.appendChild(userEl);
         });
     }
     
     function showError(message) {
         errorMessage.textContent = message;
-        errorMessage.style.display = 'block';
+        errorMessage.classList.remove('d-none');
     }
     
     function hideError() {
-        errorMessage.style.display = 'none';
+        errorMessage.classList.add('d-none');
     }
     
     function showLoading() {
-        loading.style.display = 'block';
-        nameTypeSelect.disabled = true;
+        loading.classList.remove('d-none');
     }
     
     function hideLoading() {
-        loading.style.display = 'none';
-        nameTypeSelect.disabled = false;
+        loading.classList.add('d-none');
     }
     
-    const handleEnterKey = (e) => {
-        if(e.key === 'Enter') {
-            generateUsers();
-        }
-    }
-    
-    userCountInput.addEventListener('keydown', handleEnterKey);
-    
-    // Generate users on page load
     generateUsers();
 });
