@@ -43,8 +43,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    //modified code
-
     editButton.addEventListener('click', function() {
         enableEditMode();
     });
