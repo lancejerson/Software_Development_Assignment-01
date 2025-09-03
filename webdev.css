@@ -10,6 +10,7 @@
     border: solid 1px;
 }
 
+
 .users-header {
     display: grid;
     grid-template-columns: 25% 15% 40% 20%;
