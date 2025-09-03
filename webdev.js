@@ -113,11 +113,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 showUserDetails(user);
                 userModal.show();
             });
-
             usersList.appendChild(userDiv);
         }
     }
-
+    
     function showUserDetails(user) {
         const address = user.editedAddress || 
             (user.location.street.number + ' ' + 
