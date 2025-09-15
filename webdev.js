@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
             
-        fetch(`https://randomuser.me/api/?results=${count}`)
+        fetch(`http://localhost:3000/api?results=${count}`)
             .then(response => response.json())
             .then(data => {
                 currentUsers = data.results;
