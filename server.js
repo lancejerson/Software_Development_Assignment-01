@@ -1,28 +1,34 @@
-const express = require('express');
-const cors = require('cors');
+import express from "express";
+import cors from "cors";
+
 const app = express();
 const port = 3000;
 
+// Enable CORS
 app.use(cors());
 
+// Sample user data
 let users = [];
 
+// Function to generate random users
 function generateRandomUsers(count) {
   const newUsers = [];
+  const genders = ['male', 'female'];
+  const maleNames = ['James', 'John', 'Robert', 'Michael', 'William'];
+  const femaleNames = ['Mary', 'Patricia', 'Jennifer', 'Linda', 'Elizabeth'];
+  const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones'];
+  const domains = ['example.com', 'test.com', 'demo.com', 'mail.com'];
+  const countries = ['United States', 'Canada', 'United Kingdom', 'Australia', 'Germany'];
+
   for (let i = 0; i < count; i++) {
-    const gender = Math.random() > 0.5 ? 'male' : 'female';
-    const firstNames = {
-      male: ['James', 'John', 'Robert', 'Michael', 'William'],
-      female: ['Mary', 'Patricia', 'Jennifer', 'Linda', 'Elizabeth']
-    };
-    const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones'];
-    const domains = ['example.com', 'test.com', 'demo.com', 'mail.com'];
-    
-    const firstName = firstNames[gender][Math.floor(Math.random() * firstNames[gender].length)];
+    const gender = genders[Math.floor(Math.random() * genders.length)];
+    const firstName = gender === 'male' 
+      ? maleNames[Math.floor(Math.random() * maleNames.length)]
+      : femaleNames[Math.floor(Math.random() * femaleNames.length)];
     const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
     const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}@${domains[Math.floor(Math.random() * domains.length)]}`;
-    const country = ['United States', 'Canada', 'United Kingdom', 'Australia', 'Germany'][Math.floor(Math.random() * 5)];
-    
+    const country = countries[Math.floor(Math.random() * countries.length)];
+
     newUsers.push({
       gender: gender,
       name: {
@@ -52,9 +58,10 @@ function generateRandomUsers(count) {
   return newUsers;
 }
 
+// Initialize with some users
 users = generateRandomUsers(100);
 
-// Routes
+// API Routes
 app.get('/api', (req, res) => {
   const results = parseInt(req.query.results) || 1;
   const count = Math.min(Math.max(results, 1), 1000);
@@ -74,6 +81,7 @@ app.get('/api', (req, res) => {
   }
 });
 
+// Start server
 app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+  console.log(`Local Random User API running at http://localhost:${port}/api`);
 });
